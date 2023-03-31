@@ -29,17 +29,12 @@ Code quality
 [Backend](./packages/backend)
 
 - Nest
-- TypeORM
+- Prisma
 
 [UI kit](./packages/ui)
 
 - ???
 - Rollup
-
-[Data contract](./packages/schema)
-
-- GraphQL
-- GraphQL code generator
 
 # Getting started
 
@@ -64,10 +59,6 @@ Prerequisites
 # Development
 
 ...
-
-# Background
-
-Named after [Max Weber](https://en.wikipedia.org/wiki/Max_Weber), sociology founder
 
 # License
 
