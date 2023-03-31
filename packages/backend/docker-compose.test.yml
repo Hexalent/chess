@@ -1,0 +1,45 @@
+version: '3.8'
+services:
+  api:
+    container_name: chess-api-test
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    env_file:
+      - .env
+    ports:
+      - ${SERVER_PORT}:${SERVER_PORT}
+    depends_on:
+      - postgres
+    networks:
+      - chess-network
+
+  postgres:
+    image: postgres:latest
+    container_name: chess-postgres-test
+    restart: always
+    env_file:
+      - .env.test
+    expose:
+      - 5434
+    ports:
+      - '5434:5432'
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - chess-network
+
+volumes:
+  postgres_data:
+    driver: local
+networks:
+  leviathan-network:
+    driver: bridge
+    name: chess-network
