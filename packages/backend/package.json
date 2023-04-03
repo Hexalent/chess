@@ -1,5 +1,5 @@
 {
-  "name": "@chess/backend",
+  "name": "backend",
   "license": "MIT",
   "private": true,
   "version": "0.0.1",
@@ -29,8 +29,7 @@
     "seed": "ts-node prisma/seed.ts",
     "postinstall": "yarn run prisma:generate",
     "docker:migrate": "docker-compose -f docker-compose.migrate.yaml up -d",
-    "docker:db": "docker-compose -f docker-compose.db.yaml up -d",
-    "docker:seed": "docker exec -it leviathan-api yarn run seed",
+    "docker:seed": "docker exec -it chess-api yarn run seed",
     "docker": "docker-compose up -d",
     "docker:build": "docker-compose build"
   },
