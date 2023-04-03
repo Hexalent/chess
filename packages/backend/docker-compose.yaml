@@ -1,27 +1,16 @@
-version: '3.8'
+version: "3.8"
 services:
-  nest-api:
+  app:
     container_name: chess-api
     build:
-      context: .
       dockerfile: Dockerfile
-    ports:
-      - '1776:1776'
-    depends_on:
-      - postgres
-    env_file:
-      - .env
-  postgres:
-    image: postgres:latest
-    container_name: postgres
-    restart: always
-    ports:
-      - '5432:5432'
-    env_file:
-      - .env
+      context: .
     volumes:
-      - postgres:/var/lib/postgresql/data
+      - "./:/app"
+      - chess_api_data:/app/data
+    ports:
+      - "1776:1776"
 
 volumes:
-  postgres:
-    name: chess-db
+  chess_api_data:
+    name: chess_api_data

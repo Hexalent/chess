@@ -41,21 +41,13 @@ const initApp = async () => {
     }),
   );
   const config = new DocumentBuilder()
-    .setTitle('Leviathan API')
-    .setDescription('The leviathan API description')
-    .setVersion('1.0')
-    .addBearerAuth(
-      {
-        type: 'http',
-        scheme: 'bearer',
-        bearerFormat: 'JWT',
-        name: 'JWT',
-        description: 'Enter JWT token',
-        in: 'header',
-      },
-      'JWT-auth',
+    .setTitle('Chess API')
+    .setDescription(
+      'An elegant and powerful API for managing chess games, tournaments, players, and analytics. Experience seamless integration with your favorite chess applications, tools, and platforms.',
     )
+    .setVersion('1.0')
     .build();
+
   const swaggerOptions: SwaggerCustomOptions = {
     swaggerOptions: {
       tagsSorter: 'alpha',
