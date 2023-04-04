@@ -1,0 +1,17 @@
+version: "3.8"
+services:
+  app:
+    container_name: chess-api
+    build:
+      dockerfile: Dockerfile
+      context: .
+    volumes:
+      - "./:/app"
+    env_file:
+      - .env
+    ports:
+      - "1776:1776"
+
+volumes:
+  chess_api_data:
+    name: chess_api_data

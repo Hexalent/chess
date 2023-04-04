@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+  migrate:
+    container_name: chess-migrate
+    build:
+      dockerfile: Dockerfile
+      context: .
+    volumes:
+      - "./:/app"
+    env_file:
+      - .env
+    command: yarn run migrate:up
+
+volumes:
+  migrate_data:
+    name: chess_migrate_data
