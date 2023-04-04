@@ -1,3 +1,9 @@
-import React, { FunctionComponent } from 'react'
+import '../app.css'
 
-export const App: FunctionComponent = () => <div>App</div>
+import { Game } from '#/pages'
+
+export const App = () => (
+  <>
+    <Game />
+  </>
+)
