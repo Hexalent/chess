@@ -1,7 +1,7 @@
 export enum Colors {
   WHITE = '#E8EDF9',
   BLACK = '#B7C0D8',
-  ACTIVE = '#7B61FF'
+  ACTIVE = 'rgba(123,97,255,0.7)'
 }
 export enum FigureNames {
   KING = 'King',
