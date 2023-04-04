@@ -1,4 +1,4 @@
-import React from 'react'
+import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 
 import { App } from './app'
@@ -6,7 +6,7 @@ import { App } from './app'
 const reactRoot = createRoot(document.getElementById('root')!)
 
 reactRoot.render(
-  <React.StrictMode>
+  <StrictMode>
     <App />
-  </React.StrictMode>
+  </StrictMode>
 )

@@ -1,16 +1,8 @@
 import react from '@vitejs/plugin-react'
-import * as path from 'node:path'
-import { packageDirectorySync } from 'pkg-dir'
 import { defineConfig } from 'vite'
-
-const packageRoot = packageDirectorySync()
+import tsconfigPaths from 'vite-tsconfig-paths'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
-  resolve: {
-    alias: {
-      src: path.resolve(packageRoot, './src')
-    }
-  }
+  plugins: [react(), tsconfigPaths()]
 })
