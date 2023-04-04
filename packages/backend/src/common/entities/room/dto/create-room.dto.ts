@@ -8,5 +8,5 @@ export class CreateRoomDto {
   @IsInt()
   @Min(1)
   @Max(5)
-  capacity: number;
+  maxNumPlayers: number;
 }

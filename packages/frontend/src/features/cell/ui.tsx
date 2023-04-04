@@ -1,15 +1,14 @@
-import { FC } from 'react'
-
-import { boardSelectors, playerSelectors } from '#/entities/zoostand'
+import { boardSelectors, playerSelectors } from '#/entities'
 import { ICell } from '#/shared'
 
-interface Props {
+interface CellProps {
   cell: ICell
 }
 
-export const Cell: FC<Props> = ({ cell }) => {
+export const Cell = ({ cell }: CellProps) => {
   const highlightCell = boardSelectors.use.highlightCell()
   const currentPlayerColor = playerSelectors.use.color()
+
   return (
     <div
       className={`w-[64px] h-[64px] flex items-center justify-center`}

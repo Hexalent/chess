@@ -1,8 +1,8 @@
-import '../app.css'
+import './styles/tailwind.css'
 
 import { Game } from '#/pages'
 
-export const App = () => (
+export const Application = () => (
   <>
     <Game />
   </>
