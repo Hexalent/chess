@@ -7,6 +7,8 @@ services:
       context: .
     volumes:
       - "./:/app"
+    networks:
+      - chess-network
     env_file:
       - .env
     command: yarn run migrate:up
@@ -14,3 +16,8 @@ services:
 volumes:
   migrate_data:
     name: chess_migrate_data
+
+networks:
+  chess-network:
+    driver: bridge
+    name: chess-network
