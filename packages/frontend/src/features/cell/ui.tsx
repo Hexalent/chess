@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import { memo } from 'react'
 
 import { Cell } from '#/entities'
 
@@ -8,7 +8,7 @@ interface CellProps {
   click: (cell: Cell) => void
 }
 
-export const CellComponent: FC<CellProps> = ({ cell, selected, click }) => {
+export const CellComponent = memo(({ cell, selected, click }: CellProps) => {
   return (
     <div
       className='flex justify-center items-center w-[12.5%]'
@@ -25,4 +25,6 @@ export const CellComponent: FC<CellProps> = ({ cell, selected, click }) => {
       )}
     </div>
   )
-}
+})
+
+CellComponent.displayName = 'CellComponent'
