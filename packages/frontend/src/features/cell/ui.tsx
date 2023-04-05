@@ -1,6 +1,6 @@
 import { FC } from 'react'
 
-import { boardSelectors, playerSelectors } from '#/entities/zoostand'
+import { boardSelectors, playerSelectors } from '#/entities'
 import { ICell } from '#/shared'
 
 interface Props {
