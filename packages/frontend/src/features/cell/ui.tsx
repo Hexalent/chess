@@ -1,35 +1,28 @@
 import { FC } from 'react'
 
-import { boardSelectors, playerSelectors } from '#/entities'
-import { ICell } from '#/shared'
+import { Cell } from '#/entities'
 
-interface Props {
-  cell: ICell
+interface CellProps {
+  cell: Cell
+  selected: boolean
+  click: (cell: Cell) => void
 }
 
-export const Cell: FC<Props> = ({ cell }) => {
-  const selectFigure = boardSelectors.use.selectFigure()
-  const showMoves = boardSelectors.use.showAvailableMoves()
-  const makeMove = boardSelectors.use.makeMove()
-  const madeMove = boardSelectors.use.madeMove()
-  const togglePlayer = playerSelectors.use.togglePlayer()
-  const currentPlayerColor = playerSelectors.use.color()
+export const CellComponent: FC<CellProps> = ({ cell, selected, click }) => {
   return (
     <div
-      className={`w-[64px] h-[64px] flex items-center justify-center`}
-      style={{ backgroundColor: cell.color }}
+      className='flex justify-center items-center w-[12.5%]'
+      style={{
+        background: selected ? 'rgba(123,97,255,0.7)' : cell.color
+      }}
       onClick={() => {
-        if (madeMove) {
-          togglePlayer()
-          return
-        }
-        makeMove({ y: cell.y, x: cell.x })
-        selectFigure({ y: cell.y, x: cell.x, currentPlayerColor })
-        showMoves({ y: cell.y, x: cell.x, currentPlayerColor })
+        click(cell)
       }}
     >
-      {cell.available && <div className='min-w-[20px] min-h-[20px] rounded-full bg-[rgba(123,97,255,0.7)]' />}
-      {cell.figure && <img src={cell.figure.img} alt={cell.figure.name} className='w-[48px] h-[48px]' />}
+      {cell.available && !cell.figure && <div className='w-[15px] h-[15px] bg-[rgba(123,97,255,0.7)] rounded-full' />}
+      {cell.figure?.logo && (
+        <img src={cell.figure.logo} alt='' className='min-w-[75%] max-w-[75%] min-h-[75%] max-h-[75%]' />
+      )}
     </div>
   )
 }

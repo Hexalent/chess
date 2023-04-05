@@ -1,29 +1,44 @@
-import { useCallback, useEffect } from 'react'
+import { FC, useEffect, useState } from 'react'
 
-import { boardSelectors } from '#/entities'
-import { Row } from '#/features'
+import { Board, Cell } from '#/entities'
+import { RowComponent } from '#/features'
+import { Colors } from '#/shared'
 
-export const Board = () => {
-  const board = boardSelectors.use.board()
-  const initBoard = boardSelectors.use.initBoard()
-  const initFigures = boardSelectors.use.initFigures()
+interface BoardProps {
+  board: Board
+  setBoard: (board: Board) => void
+  currentPlayer: Colors
+  swapPlayer: () => void
+}
 
-  const buildBoard = useCallback(() => {
-    initBoard()
-    initFigures()
-  }, [initBoard, initFigures])
+export const BoardComponent: FC<BoardProps> = ({ board, setBoard, currentPlayer, swapPlayer }) => {
+  const [selectedCell, setSelectedCell] = useState<Cell | null>(null)
+
+  const click = (cell: Cell) => {
+    if (selectedCell && selectedCell !== cell && selectedCell.figure?.canMove(cell)) {
+      selectedCell.moveFigure(cell)
+      swapPlayer()
+      setSelectedCell(null)
+    } else {
+      if (cell.figure?.color === currentPlayer) {
+        setSelectedCell(cell)
+      }
+    }
+  }
 
   useEffect(() => {
-    buildBoard()
-  }, [buildBoard])
+    const newBoard = board.getCopyBoard()
+    board.highlightCells(selectedCell)
+    setBoard(newBoard)
+  }, [selectedCell])
 
   return (
-    <div className='w-[calc(64px * 8)] h-[calc(64px * 8)] flex flex-wrap'>
-      {board.map(row => (
-        <div key={Math.random()}>
-          <Row row={row} />
-        </div>
-      ))}
+    <div className='p-2 bg-white rounded'>
+      <div className='w-[384px] h-[384px] flex flex-wrap'>
+        {board.cells.map(row => (
+          <RowComponent key={Math.random()} click={click} row={row} selectedCell={selectedCell} />
+        ))}
+      </div>
     </div>
   )
 }
