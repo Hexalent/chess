@@ -2,7 +2,7 @@ import { FC, useEffect, useState } from 'react'
 
 import { Board, Cell } from '#/entities'
 import { RowComponent } from '#/features'
-import { Colors } from '#/shared'
+import { BoardStyle, Colors, DropDown } from '#/shared'
 
 interface BoardProps {
   board: Board
@@ -13,6 +13,14 @@ interface BoardProps {
 
 export const BoardComponent: FC<BoardProps> = ({ board, setBoard, currentPlayer, swapPlayer }) => {
   const [selectedCell, setSelectedCell] = useState<Cell | null>(null)
+  const boardStyles = [
+    { id: Math.random(), option: BoardStyle.NO_STYLES },
+    { id: Math.random(), option: BoardStyle.INSIDE_BOARD },
+    { id: Math.random(), option: BoardStyle.OUTSIDE_BOARD }
+  ]
+  const [boardStyle, setBoardStyle] = useState<{ id: number; option: string }>(
+    boardStyles[0] as { id: number; option: string }
+  )
 
   const click = (cell: Cell) => {
     if (selectedCell && selectedCell !== cell && selectedCell.figure?.canMove(cell)) {
@@ -33,11 +41,22 @@ export const BoardComponent: FC<BoardProps> = ({ board, setBoard, currentPlayer,
   }, [selectedCell])
 
   return (
-    <div className='p-2 bg-white rounded'>
-      <div className='w-[384px] h-[384px] flex flex-wrap'>
-        {board.cells.map(row => (
-          <RowComponent key={Math.random()} click={click} row={row} selectedCell={selectedCell} />
-        ))}
+    <div>
+      <DropDown title='Board Style' options={boardStyles} boardStyle={boardStyle} setBoardStyle={setBoardStyle} />
+      <div
+        className={`bg-white rounded ${boardStyle.option === BoardStyle.OUTSIDE_BOARD ? 'pt-2 pr-2 pl-7 pb-7' : 'p-2'}`}
+      >
+        <div className='w-[512px] h-[512px] flex flex-wrap'>
+          {board.cells.map(row => (
+            <RowComponent
+              key={Math.random()}
+              click={click}
+              row={row}
+              selectedCell={selectedCell}
+              boardStyle={boardStyle.option}
+            />
+          ))}
+        </div>
       </div>
     </div>
   )
