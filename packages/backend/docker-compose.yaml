@@ -16,6 +16,7 @@ services:
       - chess-network
 
   redis:
+    container_name: chess-redis
     image: "redis:alpine"
     ports:
       - "6379:6379"
@@ -25,6 +26,7 @@ services:
       driver: none
 
   redis-commander:
+    container_name: chess-redis-commander
     image: rediscommander/redis-commander:latest
     environment:
       - REDIS_HOSTS=local:redis:6379
