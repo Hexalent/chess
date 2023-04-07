@@ -1,3 +1,9 @@
-import React, { FunctionComponent } from 'react'
+import './styles/tailwind.css'
 
-export const App: FunctionComponent = () => <div>App</div>
+import { Game } from '#/pages'
+
+export const Application = () => (
+  <>
+    <Game />
+  </>
+)

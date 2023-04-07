@@ -1,16 +1,49 @@
 version: "3.8"
+
 services:
   app:
     container_name: chess-api
     build:
-      dockerfile: Dockerfile
       context: .
+      dockerfile: Dockerfile
     volumes:
       - "./:/app"
-      - chess_api_data:/app/data
+    env_file:
+      - .env
     ports:
       - "1776:1776"
+    networks:
+      - chess-network
+
+  redis:
+    container_name: chess-redis
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
+    networks:
+      - chess-network
+    logging:
+      driver: none
+
+  redis-commander:
+    container_name: chess-redis-commander
+    image: rediscommander/redis-commander:latest
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    ports:
+      - "8081:8081"
+    depends_on:
+      - redis
+    networks:
+      - chess-network
+    logging:
+      driver: none
 
 volumes:
   chess_api_data:
     name: chess_api_data
+
+networks:
+  chess-network:
+    driver: bridge
+    name: chess-network

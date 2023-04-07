@@ -16,3 +16,13 @@ export const cacheModuleConfig = {
     isGlobal: true,
   }),
 };
+
+export const redisModuleConfig = {
+  imports: [ConfigModule],
+  inject: [ConfigService],
+  useFactory: (configService: ConfigService) => ({
+    config: {
+      url: configService.get<string>('REDIS_HOST'),
+    },
+  }),
+};

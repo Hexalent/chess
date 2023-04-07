@@ -17,17 +17,11 @@
   },
   "targetDefaults": {
     "build": {
-      "dependsOn": [
-        "^build"
-      ],
-      "outputs": [
-        "{projectRoot}/dist"
-      ]
+      "dependsOn": ["^build"],
+      "outputs": ["{projectRoot}/dist"]
     },
     "test:cov": {
-      "outputs": [
-        "{projectRoot}/coverage"
-      ]
+      "outputs": ["{projectRoot}/coverage"]
     }
   },
   "defaultBase": "develop"

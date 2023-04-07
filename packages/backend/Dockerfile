@@ -1,22 +1,16 @@
-FROM node:16 AS builder
-
-# Create app directory
+FROM node:16-alpine AS builder
 WORKDIR /app
 
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
 COPY package*.json ./
 COPY prisma ./prisma/
 
-# Install app dependencies
 RUN yarn install --frozen-lockfile
 
 COPY . .
 
 RUN yarn run build
 
-FROM node:16
-
-WORKDIR /app
+FROM node:16-alpine
 
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package*.json ./

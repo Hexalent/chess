@@ -8,6 +8,9 @@ datasource db {
   url      = "file:dev.db"
 }
 
-model Test {
-  id Int @id @default(autoincrement())
+model Room {
+  id            String   @id @default(uuid())
+  name          String
+  maxNumPlayers Int
+  createdAt     DateTime @default(now())
 }
