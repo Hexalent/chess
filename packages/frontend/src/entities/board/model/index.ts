@@ -1,165 +1,93 @@
-import { create } from 'zustand'
+import { Bishop, Cell, Figure, King, Knight, Pawn, Queen, Rook } from '#/entities'
+import { Colors } from '#/shared'
 
-import { Colors, FigureNames, ICell, initialFigurePlacements, PlayerColor } from '#/shared'
-import { createSelectorFunctions } from '#/shared/lib/selectors'
+export class Board {
+  cells: Cell[][] = []
+  lostBlackFigures: Figure[] = []
+  lostWhiteFigures: Figure[] = []
 
-interface IBoardStore {
-  board: ICell[][]
-  madeMove: boolean
-  selectedFigure: ICell | null
-  initBoard: () => void
-  initFigures: () => void
-  selectFigure: ({ y, x, currentPlayerColor }: { y: number; x: number; currentPlayerColor: PlayerColor }) => void
-  showAvailableMoves: ({ y, x, currentPlayerColor }: { y: number; x: number; currentPlayerColor: PlayerColor }) => void
-  makeMove: ({ y, x }: { y: number; x: number }) => void
-}
-
-export const useBoard = create<IBoardStore>((set, get) => ({
-  board: [],
-  madeMove: false,
-  selectedFigure: null,
-  initBoard: () => {
-    const newBoard: ICell[][] = Array.from({ length: 8 }, (_, i) =>
-      Array.from({ length: 8 }, (_, j) => ({
-        x: i,
-        y: j,
-        color: (i + j) % 2 === 0 ? Colors.WHITE : Colors.BLACK,
-        id: Math.random(),
-        figure: null,
-        available: false
-      }))
-    )
-
-    set({ board: newBoard })
-  },
-  initFigures: () => {
-    const initialBoard = get().board
-
-    const newBoard = initialFigurePlacements.reduce((board, { row, col, name, img, color }) => {
-      const updatedRow = board[row] as ICell[]
-      updatedRow[col] = { ...(updatedRow[col] as ICell), figure: { name, img, color } }
-      return [...board.slice(0, row), updatedRow, ...board.slice(row + 1)]
-    }, initialBoard)
-
-    set({ board: newBoard })
-  },
-  selectFigure: ({ y, x, currentPlayerColor }) => {
-    const updatedBoard = get().board.map((row, i) =>
-      row.map((cell, j) => {
-        const isCurrentCell = y === j && x === i
-        const isFigure = !!(get().board[x] as ICell[])[y]?.figure
-        const isBlackCell = (i + j) % 2 !== 0
-
-        if (isCurrentCell && isFigure && cell.figure && currentPlayerColor === cell.figure.color) {
-          set({ selectedFigure: cell })
-          set({ madeMove: false })
-          return {
-            ...cell,
-            color: Colors.ACTIVE
-          }
+  public initCells() {
+    for (let i = 0; i < 8; i++) {
+      const row: Cell[] = []
+      for (let j = 0; j < 8; j++) {
+        if ((i + j) % 2 !== 0) {
+          row.push(new Cell(this, j, i, Colors.BLACK, null)) // Черные ячейки
+        } else {
+          row.push(new Cell(this, j, i, Colors.WHITE, null)) // белые
         }
-        if ((isCurrentCell && !isFigure) || (isCurrentCell && currentPlayerColor !== cell.figure?.color)) {
-          set({ selectedFigure: null })
-          set({ madeMove: false })
-          return {
-            ...cell,
-            color: isBlackCell ? Colors.BLACK : Colors.WHITE
-          }
-        }
-        return {
-          ...cell,
-          color: isBlackCell ? Colors.BLACK : Colors.WHITE
-        }
-      })
-    )
-
-    set({ board: updatedBoard })
-  },
-  showAvailableMoves: ({ y, x, currentPlayerColor }) => {
-    const updatedBoard = get().board.map((row, i) =>
-      row.map((cell, j) => {
-        const isAvailableMove = showAvailableMove(get().selectedFigure, cell, x, y, j, i)
-
-        return {
-          ...cell,
-          available: isAvailableMove
-        }
-      })
-    )
-    if (get().selectedFigure?.figure && get().selectedFigure?.figure?.color === currentPlayerColor) {
-      set({ board: updatedBoard })
-    } else {
-      set({
-        board: get().board.map(row => {
-          return row.map(cell => {
-            return {
-              ...cell,
-              available: false
-            }
-          })
-        })
-      })
-    }
-  },
-  makeMove: ({ y, x }) => {
-    if (get().selectedFigure && (get().board[x] as ICell[])[y]?.available) {
-      set({
-        board: get().board.map((row, yCoord) => {
-          return row.map((cell, xCoord) => {
-            if (yCoord === get().selectedFigure!.x && xCoord === get().selectedFigure!.y) {
-              return { ...cell, x, y, figure: null }
-            }
-            if (y === xCoord && x === yCoord) {
-              return { ...cell, x, y, figure: get().selectedFigure!.figure }
-            }
-            return cell
-          })
-        })
-      })
-      set({ madeMove: true })
+      }
+      this.cells.push(row)
     }
   }
-}))
 
-const showAvailableMove = (
-  selectedCell: ICell | null,
-  boardCell: ICell,
-  selectedCellXCoords: number,
-  selectedCellYCoords: number,
-  y: number,
-  x: number
-) => {
-  if (selectedCell) {
-    const dx = Math.abs(x - selectedCellXCoords)
-    const dy = Math.abs(y - selectedCellYCoords)
-    const isOccupied = !!boardCell.figure
-    // const isEmptyHorizontal = () => true
-    // const isEmptyVertical = () => true
-    // const isEmptyDiagonal = () => true
-    // const forward: 1 | -1 = selectedCell.figure?.color === 'white' ? 1 : -1
+  public getCopyBoard(): Board {
+    const newBoard = new Board()
+    newBoard.cells = this.cells
+    newBoard.lostWhiteFigures = this.lostWhiteFigures
+    newBoard.lostBlackFigures = this.lostBlackFigures
+    return newBoard
+  }
 
-    switch (selectedCell.figure?.name) {
-      case FigureNames.PAWN: {
-        return ((dy === 1 && dx === 0) || (dy === 2 && dx === 0)) && !isOccupied
-      }
-      case FigureNames.ROOK: {
-        return (dx === 0 || dy === 0) && !isOccupied
-      }
-      case FigureNames.BISHOP: {
-        return dx === dy && !isOccupied
-      }
-      case FigureNames.QUEEN: {
-        return (dx === dy || dx === 0 || dy === 0) && !isOccupied
-      }
-      case FigureNames.KNIGHT: {
-        return ((dx === 1 && dy === 2) || (dx === 2 && dy === 1)) && !isOccupied
-      }
-      default: {
-        return dx <= 1 && dy <= 1 && !isOccupied
-      }
+  public highlightCells(selectedCell: Cell | null): void {
+    this.cells.forEach(row => {
+      row.forEach(target => {
+        target.available = !!selectedCell?.figure?.canMove(target)
+      })
+    })
+  }
+
+  public getCell(x: number, y: number): Cell {
+    return this.cells![y]![x]!
+  }
+
+  private addPawns() {
+    for (let i = 0; i < 8; i++) {
+      new Pawn(Colors.BLACK, this.getCell(i, 1))
+      new Pawn(Colors.WHITE, this.getCell(i, 6))
     }
   }
-  return false
-}
 
-export const boardSelectors = createSelectorFunctions(useBoard)
+  private addKings() {
+    new King(Colors.BLACK, this.getCell(4, 0))
+    new King(Colors.WHITE, this.getCell(4, 7))
+  }
+
+  private addQueens() {
+    new Queen(Colors.BLACK, this.getCell(3, 0))
+    new Queen(Colors.WHITE, this.getCell(3, 7))
+  }
+
+  private addBishops() {
+    new Bishop(Colors.BLACK, this.getCell(2, 0))
+    new Bishop(Colors.BLACK, this.getCell(5, 0))
+    new Bishop(Colors.WHITE, this.getCell(2, 7))
+    new Bishop(Colors.WHITE, this.getCell(5, 7))
+  }
+
+  private addKnights() {
+    new Knight(Colors.BLACK, this.getCell(1, 0))
+    new Knight(Colors.BLACK, this.getCell(6, 0))
+    new Knight(Colors.WHITE, this.getCell(1, 7))
+    new Knight(Colors.WHITE, this.getCell(6, 7))
+  }
+
+  private addRooks() {
+    new Rook(Colors.BLACK, this.getCell(0, 0))
+    new Rook(Colors.BLACK, this.getCell(7, 0))
+    new Rook(Colors.WHITE, this.getCell(0, 7))
+    new Rook(Colors.WHITE, this.getCell(7, 7))
+  }
+
+  // public addFisherFigures() {
+  //
+  // }
+
+  public addFigures() {
+    this.addPawns()
+    this.addKnights()
+    this.addKings()
+    this.addBishops()
+    this.addQueens()
+    this.addRooks()
+  }
+}

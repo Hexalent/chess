@@ -1,35 +1,64 @@
-import { FC } from 'react'
+import { memo } from 'react'
 
-import { boardSelectors, playerSelectors } from '#/entities'
-import { ICell } from '#/shared'
+import { Cell } from '#/entities'
+import { BoardStyle } from '#/shared'
 
-interface Props {
-  cell: ICell
+interface CellProps {
+  cell: Cell
+  selected: boolean
+  click: (cell: Cell) => void
+  boardStyle: string
 }
 
-export const Cell: FC<Props> = ({ cell }) => {
-  const selectFigure = boardSelectors.use.selectFigure()
-  const showMoves = boardSelectors.use.showAvailableMoves()
-  const makeMove = boardSelectors.use.makeMove()
-  const madeMove = boardSelectors.use.madeMove()
-  const togglePlayer = playerSelectors.use.togglePlayer()
-  const currentPlayerColor = playerSelectors.use.color()
+export const CellComponent = memo(({ cell, selected, click, boardStyle }: CellProps) => {
+  const chessAlphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+  const isNumberLabelVisible = cell.x === 0 && boardStyle !== BoardStyle.NO_STYLES
+  const isLetterLabelVisible = cell.y === 7 && boardStyle !== BoardStyle.NO_STYLES
+
+  const getNumberLabelPosition = () => {
+    if (boardStyle === BoardStyle.INSIDE_BOARD) {
+      return 'top-0.5 left-1'
+    } else {
+      return 'top-5 -left-4'
+    }
+  }
+
+  const getLetterLabelPosition = () => {
+    if (boardStyle === BoardStyle.INSIDE_BOARD) {
+      return 'top-[44px] left-[52px]'
+    } else {
+      return 'top-[68px] left-[26px]'
+    }
+  }
+
   return (
     <div
-      className={`w-[64px] h-[64px] flex items-center justify-center`}
-      style={{ backgroundColor: cell.color }}
+      className='cell flex justify-center items-center w-[12.5%] relative'
+      style={{
+        background: selected ? 'rgba(123,97,255,0.7)' : cell.color
+      }}
       onClick={() => {
-        if (madeMove) {
-          togglePlayer()
-          return
-        }
-        makeMove({ y: cell.y, x: cell.x })
-        selectFigure({ y: cell.y, x: cell.x, currentPlayerColor })
-        showMoves({ y: cell.y, x: cell.x, currentPlayerColor })
+        click(cell)
       }}
     >
-      {cell.available && <div className='min-w-[20px] min-h-[20px] rounded-full bg-[rgba(123,97,255,0.7)]' />}
-      {cell.figure && <img src={cell.figure.img} alt={cell.figure.name} className='w-[48px] h-[48px]' />}
+      {cell.available && !cell.figure && (
+        <div className='dot w-[20px] h-[20px] bg-[rgba(123,97,255,0.7)] rounded-full' />
+      )}
+      {cell.figure?.logo && (
+        <img src={cell.figure.logo} alt='' className='figure min-w-[75%] max-w-[75%] min-h-[75%] max-h-[75%]' />
+      )}
+      {isNumberLabelVisible && (
+        <div className={`number-label absolute text-sm font-bold text-gray-600 ${getNumberLabelPosition()}`}>
+          {cell.y}
+        </div>
+      )}
+      {isLetterLabelVisible && (
+        <div className={`letter-label absolute text-sm font-bold text-gray-600 ${getLetterLabelPosition()}`}>
+          {chessAlphabet[cell.x]}
+        </div>
+      )}
     </div>
   )
-}
+})
+
+CellComponent.displayName = 'CellComponent'

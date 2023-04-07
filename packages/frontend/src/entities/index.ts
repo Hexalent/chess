@@ -1,2 +1,3 @@
 export * from './board'
-export * from './player'
+export * from './cell/model'
+export * from './figures'
