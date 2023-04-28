@@ -1,10 +1,9 @@
 import { useEffect } from 'react'
 import { FiSettings } from 'react-icons/fi'
 
-import { boardSelectors, modalSelectors } from '#/entities'
-import { playerSelectors } from '#/entities/stores/player'
-import { Colors, SettingsModal } from '#/shared'
-import { BoardComponent } from '#/widgets'
+import { boardSelectors, modalSelectors, playerSelectors } from '#/entities'
+import { Colors } from '#/shared'
+import { BoardComponent, SettingsModal } from '#/widgets'
 
 export const Game = () => {
   const setCurrentPlayer = playerSelectors.use.setPlayer()
