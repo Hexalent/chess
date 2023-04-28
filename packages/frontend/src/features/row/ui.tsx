@@ -1,25 +1,17 @@
 import { memo } from 'react'
 
-import { Cell } from '#/entities'
+import { boardSelectors, Cell } from '#/entities'
 import { CellComponent } from '#/features'
 
 type RowProps = {
   row: Cell[]
-  selectedCell: Cell | null
-  click: (cell: Cell) => void
-  boardStyle: string
 }
-export const RowComponent = memo(({ row, selectedCell, click, boardStyle }: RowProps) => {
+export const RowComponent = memo(({ row }: RowProps) => {
+  const selectedCell = boardSelectors.use.selectedCell()
   return (
-    <div className='min-w-full h-[64px] flex flex-wrap'>
+    <div className='min-w-full h-[40px] sm:h-[64px] flex flex-wrap'>
       {row.map(cell => (
-        <CellComponent
-          key={cell.id}
-          click={click}
-          cell={cell}
-          selected={cell.x === selectedCell?.x && cell.y === selectedCell?.y}
-          boardStyle={boardStyle}
-        />
+        <CellComponent key={cell.id} cell={cell} selected={cell.x === selectedCell?.x && cell.y === selectedCell?.y} />
       ))}
     </div>
   )
