@@ -19,7 +19,9 @@ export const CellComponent = memo(({ cell, selected }: CellProps) => {
       }}
       onClick={handleClick}
     >
-      {cellAvailable && <div className='dot w-[20px] h-[20px] bg-[rgba(123,97,255,0.7)] rounded-full' />}
+      {cellAvailable && (
+        <div className='dot w-[12px] h-[12px] sm:w-[20px] sm:h-[20px] bg-[rgba(123,97,255,0.7)] rounded-full' />
+      )}
       {cellFigure && <img src={cellFigure} alt='' className='figure min-w-[75%] max-w-[75%] min-h-[75%] max-h-[75%]' />}
       <NumberLabel cell={cell} />
       <LetterLabel cell={cell} />

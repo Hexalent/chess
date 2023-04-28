@@ -6,7 +6,7 @@ import { TbMoon } from 'react-icons/tb'
 import { boardSelectors, modalSelectors } from '#/entities'
 import { BoardStyle } from '#/shared'
 
-const Overlay = () => <div className='absolute top-0 w-full h-full bg-black opacity-50' />
+const Overlay = () => <div className='fixed top-0 w-full h-full bg-black opacity-50' />
 
 export const SettingsModal = () => {
   const toggleModal = modalSelectors.use.toggleModal()
